@@ -8,12 +8,8 @@ def unique(values):
     :return: Unique values in order of appear.
     :rtype: list
     """
-
-    uniq = [values[0]]
-    for val in values:
-        if val not in uniq:
-            uniq.append(val)
-    return uniq
+    return list(dict.fromkeys(values).keys())
+    
 
 if __name__ == "__main__":
     assert [1, 5, 3, 6, 7, 2, 4] == unique([1, 5, 3, 5, 6, 7, 2, 1, 4, 1, 5])

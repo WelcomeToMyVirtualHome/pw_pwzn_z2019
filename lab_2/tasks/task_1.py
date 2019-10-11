@@ -14,14 +14,10 @@ def counting_sort(values, _max, _min=0):
     :type _min: int
     :return:
     """
-    pass
-
-    """
-    Robimy listę zliczeń wartości - index oznacza kolejne elementy sortowane, wartość to liczba zliczeń 
-    """
-
-
-
+    
+    counts = [(lambda n, array: len([i for i, j in enumerate(array) if j == n]))(n, values) for n in range(_max)]
+    return [i for i, j in enumerate(counts) if j > 0 for k in range(j)]
+    
 if __name__ == '__main__':
     assert counting_sort(
         [99, 4, 33, 2, 2, 1, 65, 3, 97, 53],

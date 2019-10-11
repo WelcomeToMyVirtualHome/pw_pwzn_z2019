@@ -14,17 +14,15 @@ def stack_operation(stack_commands):
     """
     stack = []
     for c in stack_commands:
-        command, value = c[0], c[1]
-        if command == 'push':
-            stack.append(value)
-        elif command == 'pop':
-            pass
-        elif command == 'show_max':
-            pass
-            #max(lista)
+        if c[0] == 'push':
+            stack.append(c[1])
+        elif c[0] == 'pop':
+            stack.pop()
+        elif c[0] == 'show_max':
+            max(stack)
         else:
             print("Unknown command, doing nothing")
-    print(stack)
+    return stack
 
 if __name__ == "__main__":
     commands = [
