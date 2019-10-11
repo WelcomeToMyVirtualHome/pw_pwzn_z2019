@@ -16,6 +16,11 @@ def counting_sort(values, _max, _min=0):
     """
     pass
 
+    """
+    Robimy listę zliczeń wartości - index oznacza kolejne elementy sortowane, wartość to liczba zliczeń 
+    """
+
+
 
 if __name__ == '__main__':
     assert counting_sort(
