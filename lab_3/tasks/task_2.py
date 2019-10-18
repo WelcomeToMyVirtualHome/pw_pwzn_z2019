@@ -1,4 +1,4 @@
-def check_frequency(input):
+ def check_frequency(input):
     """
     Perform counting based on input queries and return queries result.
 
