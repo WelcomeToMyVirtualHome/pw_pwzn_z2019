@@ -13,10 +13,10 @@ Na 1pkt. Uzupełnij funkcję sort_dates, która przyjmuje dwa parametry:
 Zwraca listę posortowanych obiektów typu datetime w strefie czasowej UTC.
 
 Funkcje group_dates oraz format_day mają pomoc w grupowaniu kodu.
-UWAGA: Proszę ograniczyć użycie pętli do minimum.
+UWAGA: Proszę ograniczyć użycie pętli do minimum (max 4).
 """
-import datetime
- 
+from datetime import datetime, tzinfo, timezone
+from itertools import groupby
 
 def sort_dates(date_str, date_format=''):
     """
@@ -29,7 +29,11 @@ def sort_dates(date_str, date_format=''):
     :return: sorted desc list of utc datetime objects
     :rtype: list
     """
-
+    str_stripped = date_str.strip().splitlines()
+    dates = list(map(lambda x: datetime.strptime(x, date_format), str_stripped))
+    dates = [ (x - x.utcoffset()).replace(tzinfo = timezone.utc) for x in dates]
+    
+    return sorted(dates, reverse = True)
 
 def group_dates(dates):
     """
@@ -40,6 +44,9 @@ def group_dates(dates):
     :return:
     """
 
+    sorted_dates = sorted(dates, reverse = True)
+    grouped_dates = groupby(sorted_dates, key = lambda x: x.strftime('%Y-%m-%d'))
+    return grouped_dates
 
 def format_day(day, events):
     """
@@ -52,7 +59,10 @@ def format_day(day, events):
     :return: parsed message for day
     :rtype: str
     """
-    pass
+    formatted_day = f"{day}"
+    for e in events:
+        formatted_day += f"\n\t{e.strftime('%H:%M:%S')}"
+    return formatted_day
 
 
 def parse_dates(date_str, date_format=''):
@@ -66,8 +76,14 @@ def parse_dates(date_str, date_format=''):
     :return: parsed events
     :rtype: str
     """
-    pass
-
+    sorted_dates = sort_dates(dates, date_format)
+    grouped_dates = group_dates(sorted_dates)
+    formatted_events = ""
+    break_str = "\n----\n"
+    for day, events in grouped_dates:
+        formatted_events += f"{format_day(day, events)}" + break_str
+    return formatted_events[:-len(break_str)]
+    
 
 dates = """
 Sun 10 May 2015 13:54:36 -0700
@@ -76,14 +92,15 @@ Sat 02 May 2015 19:54:36 +0530
 Fri 01 May 2015 13:54:36 -0000
 """
 
-assert sort_dates(dates) == [
-    datetime.datetime(2015, 5, 10, 20, 54, 36, tzinfo=datetime.timezone.utc),
-    datetime.datetime(2015, 5, 10, 13, 54, 36, tzinfo=datetime.timezone.utc),
-    datetime.datetime(2015, 5, 2, 14, 24, 36, tzinfo=datetime.timezone.utc),
-    datetime.datetime(2015, 5, 1, 13, 54, 36, tzinfo=datetime.timezone.utc),
+
+assert sort_dates(dates, '%a %d %B %Y %H:%M:%S %z') == [
+    datetime(2015, 5, 10, 20, 54, 36, tzinfo=timezone.utc),
+    datetime(2015, 5, 10, 13, 54, 36, tzinfo=timezone.utc),
+    datetime(2015, 5, 2, 14, 24, 36, tzinfo=timezone.utc),
+    datetime(2015, 5, 1, 13, 54, 36, tzinfo=timezone.utc),
 ]
 
-assert parse_dates(dates) == """2015-05-10
+assert parse_dates(dates, '%a %d %B %Y %H:%M:%S %z') == """2015-05-10
 \t20:54:36
 \t13:54:36
 ----
