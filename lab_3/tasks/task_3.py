@@ -85,13 +85,13 @@ def parse_dates(date_str, date_format=''):
     return formatted_events[:-len(break_str)]
     
 
-dates = """
+if __name__ == '__main__':
+    dates = """
 Sun 10 May 2015 13:54:36 -0700
 Sun 10 May 2015 13:54:36 -0000
 Sat 02 May 2015 19:54:36 +0530
 Fri 01 May 2015 13:54:36 -0000
 """
-
 
 assert sort_dates(dates, '%a %d %B %Y %H:%M:%S %z') == [
     datetime(2015, 5, 10, 20, 54, 36, tzinfo=timezone.utc),

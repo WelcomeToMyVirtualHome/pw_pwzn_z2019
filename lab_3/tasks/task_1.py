@@ -1,3 +1,4 @@
+
 def parse_input(input):
   """
   Splits multiline string into list of lists with integers.
@@ -11,14 +12,14 @@ def parse_input(input):
   :type input: str
   :return: list of parsed list of integers
   :rtype: list
-  """     
+  """
   stripped_input = input.strip().splitlines()
   parsed_input = list(map(lambda x: list(map(int, x.split())), stripped_input))
   return parsed_input
- 
+
 _input = """
 1 5
-1 6
+1 6 7
 3 2
 1 10
 1 10
@@ -26,7 +27,7 @@ _input = """
 2 5
 3 2
 
-
 """
-if __name__ == '__main__':  
-  assert parse_input(_input) == [[1, 5], [1, 6], [3, 2], [1, 10], [1, 10], [1, 6], [2, 5], [3, 2]]
+
+if __name__ == '__main__':
+  assert parse_input(_input) == [[1, 5], [1, 6, 7], [3, 2], [1, 10], [1, 10], [1, 6], [2, 5], [3, 2]]
