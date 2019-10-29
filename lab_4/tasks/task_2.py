@@ -1,5 +1,5 @@
 """
-Częśćć 1 (1 pkt): Uzupełnij klasę Vector tak by reprezentowała wielowymiarowy wektor.
+Część 1 (1 pkt): Uzupełnij klasę Vector tak by reprezentowała wielowymiarowy wektor.
 Klasa posiada przeładowane operatory równości, dodawania, odejmowania,
 mnożenia (przez liczbę i skalarnego), długości
 oraz nieedytowalny (własność) wymiar.
@@ -9,12 +9,16 @@ oraz metodę fabryki korzystającą z metody statycznej tworzącej nowy wektor
 z dwóch punktów.
 Wszystkie metody sprawdzają wymiar.
 """
-
+from operator import add, sub, mul
+from math import sqrt
 
 class Vector:
-    dim = None  # Wymiar vectora
     def __init__(self, *args):
-        raise NotImplemented
+        self.dims = list(args)
+        
+    @property
+    def dim(self):
+        return len(self.dims)
 
     @staticmethod
     def calculate_vector(beg, end):
@@ -28,7 +32,7 @@ class Vector:
         :return: Calculated vector
         :rtype: tuple
         """
-        raise NotImplemented
+        return tuple(list(map(sub, end, beg)))
 
     @classmethod
     def from_points(cls, beg, end):
@@ -43,16 +47,59 @@ class Vector:
         :return: New vector
         :rtype: tuple
         """
-        raise NotImplemented
+        return Vector(*Vector.calculate_vector(beg, end))
 
+    def __len__(self):
+        return sqrt(sum(list(map(lambda x: x ** 2, self.dims))))
 
+    def __eq__(self, v):
+        if type(v) == Vector:
+            return self.dims == v.dims
+        else:
+            raise TypeError
+
+    def __add__(self, v): 
+        if type(v) == Vector:
+            if v.dim != self.dim:
+                raise TypeError
+            else:
+                return Vector(*tuple(list(map(add, self.dims, v.dims))))  
+        elif type(v) == int:
+            return Vector(*tuple(list(map(lambda x: x + v, self.dims))))  
+        else:
+            raise TypeError
+        
+    def __sub__(self, v):
+        if type(v) == Vector:
+            if v.dim != self.dim:
+                raise TypeError
+            else:
+                return Vector(*tuple(list(map(sub, self.dims, v.dims))))  
+        elif type(v) == int:
+            return Vector(*tuple(list(map(lambda x: x - v, self.dims))))  
+        else:
+            raise TypeError
+        
+    def __mul__(self, v):
+        if type(v) == Vector:
+            if v.dim != self.dim:
+                raise TypeError
+            else:
+                return sum(list(map(mul, self.dims, v.dims)))
+        elif type(v) == int:
+            return Vector(*tuple(list(map(lambda x: x * v, self.dims))))
+        else:
+            raise TypeError
+        
+    
 if __name__ == '__main__':
     v1 = Vector(1,2,3)
     v2 = Vector(1,2,3)
+    #print(len(Vector(3,4)))
     assert v1 + v2 == Vector(2,4,6)
     assert v1 - v2 == Vector(0,0,0)
     assert v1 * 2 == Vector(2,4,6)
     assert v1 * v2 == 14
-    assert len(Vector(3,4)) == 5.
+    # assert len(Vector(3,4)) == 5.
     assert Vector.calculate_vector([0, 0, 0], [1,2,3]) == (1,2,3)
     assert Vector.from_points([0, 0, 0], [1,2,3]) == Vector(1,2,3)

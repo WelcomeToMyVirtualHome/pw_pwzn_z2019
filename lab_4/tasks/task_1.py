@@ -6,17 +6,23 @@ Atrybut memory ma być nienadpisywalny.
 Część 2 (1 pkt): jeżeli drugi argument działania nie jest podany (None)
 użyj wartość z pamięci kalkulatora. Obsłuż przypadki skrajne.
 """
-
+from operator import add, sub, mul, truediv
 
 class Calculator:
     def __init__(self):
-        self.memory = None
+        self._memory = None
         # Podpowiedz: użyj atrybutu do przechowywania wyniku
         # ostatniej wykonanej operacji, tak by metoda memorize przypisywała
         # wynik zapisany w tym atrybucie
         self._short_memory = None
+        self.operations = {
+        "+" : add,
+        "-" : sub,
+        "*" : mul,
+        "/" : truediv
+        }
 
-    def run(self, operator, arg1, arg2):
+    def run(self, operator, arg1, arg2 = None):
         """
         Returns result of given operation.
 
@@ -29,15 +35,27 @@ class Calculator:
         :return: result of operation
         :rtype: float
         """
-        raise NotImplementedError
+        if arg1 is None:
+            raise Exception
+        if arg2 is None:
+            if self.memory is None:
+                print("No value in memory. Doing nothing")
+            arg2 = self.memory
+        if operator is not None and arg2 is not None:
+            self._short_memory = self.operations[operator](arg1, arg2)
+        return self._short_memory
+
+    @property
+    def memory(self):
+        return self._memory
 
     def memorize(self):
         """Saves last operation result to memory."""
-        raise NotImplementedError
+        self._memory = self._short_memory
 
     def clean_memory(self):
         """Cleans memorized value"""
-        raise NotImplementedError
+        self._memory = None
 
     def in_memory(self):
         """Prints memorized value."""
