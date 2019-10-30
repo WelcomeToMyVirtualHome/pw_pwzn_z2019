@@ -35,14 +35,25 @@ class Calculator:
         :return: result of operation
         :rtype: float
         """
+        
         if arg1 is None:
-            raise Exception
+            raise ValueError
+        flag = False
         if arg2 is None:
             if self.memory is None:
-                print("No value in memory. Doing nothing")
+                raise Exception
             arg2 = self.memory
-        if operator is not None and arg2 is not None:
-            self._short_memory = self.operations[operator](arg1, arg2)
+            flag = True
+        if operator is None:
+            raise ValueError
+        
+        if operator == "/":
+            if flag and arg1 == 0:
+                raise ValueError
+            if not flag and arg2 == 0:
+                raise ValueError
+
+        self._short_memory = self.operations[operator](arg1, arg2)
         return self._short_memory
 
     @property
@@ -67,5 +78,5 @@ if __name__ == '__main__':
     b = calc.run('+', 1, 2)
     calc.memorize()
     calc.in_memory()
-    c = calc.run('/', 9)
-    assert c == 3
+    c = calc.run('/', 3)
+    # assert c == 3
