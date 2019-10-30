@@ -79,4 +79,4 @@ if __name__ == '__main__':
     calc.memorize()
     calc.in_memory()
     c = calc.run('/', 3)
-    # assert c == 3
+    assert c == 3
