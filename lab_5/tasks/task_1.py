@@ -8,22 +8,23 @@ jak i operację z argumentem domyślnym) - EmptyMemory
 - dzielenie przez zero jest przekształcane w CalculatorError
 """
 from operator import add, mul, sub, truediv
-
+from numbers import Number
 
 class CalculatorError(Exception):
     pass
 
 
-class WrongOperation(Exception):
+class WrongOperation(CalculatorError):
     pass
 
 
-class NotNumberArgument(Exception):
+class NotNumberArgument(CalculatorError):
     pass
 
 
-class EmptyMemory(Exception):
+class EmptyMemory(CalculatorError):
     pass
+
 
 
 class Calculator:
@@ -52,14 +53,25 @@ class Calculator:
         :rtype: float
         """
         if operator in self.operations:
-            arg2 = arg2 or self.memory
-            if arg2:
-                self._short_memory = self.operations[operator](arg1, arg2)
-                return self._short_memory
+            if arg2 is None:
+                arg2 = self.memory
+            if isinstance(arg2, Number):
+                if arg2 == 0 and operator == "/":
+                    raise CalculatorError from ZeroDivisionError
+                else:
+                    self._short_memory = self.operations[operator](arg1, arg2)
+                    return self._short_memory
+            else:
+                raise NotNumberArgument
+        else:
+            raise WrongOperation
 
     @property
     def memory(self):
-        return self._memory
+        if self._memory is not None:
+            return self._memory
+        else:
+            raise EmptyMemory
 
     def memorize(self):
         """Saves last operation result to memory."""
@@ -72,8 +84,8 @@ class Calculator:
     def in_memory(self):
         """Prints memorized value."""
         print(f"Zapamiętana wartość: {self.memory}")
-
-
+        
+        
 if __name__ == '__main__':
     b = None
     calc = Calculator()
@@ -83,7 +95,7 @@ if __name__ == '__main__':
     except CalculatorError as exc:
         assert type(exc) == NotNumberArgument
         assert b is None
-
+    
     try:
         b = calc.run('^', 2, 3)
     except CalculatorError as exc:
