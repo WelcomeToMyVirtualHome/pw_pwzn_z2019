@@ -33,11 +33,40 @@ UWAGA: Możliwe jest wykonanie tylko jednej opcji +1 pkt.
 Otrzymuje się wtedy 2 pkt.
 UWAGA 2: Wszystkie jednoski masy występują w przykładzie.
 """
+
+"""
+UWAGA: Rowzwiązanie korzysta z biblioteki pandas. Instalacja: pip3 install pandas
+"""
+import pandas as pd
 from pathlib import Path
 
-
 def select_animals(input_path, output_path, compressed=False):
-    pass
+    with open(input_path) as _input:
+        df = pd.read_csv(_input, delimiter=',')
+        mass_column = df['mass'].str.split(' ', n = 1, expand = True)
+        df['mass'] = mass_column[0].astype('float')
+        df['unit'] = mass_column[1]
+        
+        units = {'kg' : 1, 'g' : 1e-3, 'mg' : 1e-6, 'Mg' : 1e3}
+        for unit, multiplier in units.items():
+            df.loc[df.unit == unit, 'mass'] = df['mass'] * multiplier
+            df.loc[df.unit == unit, 'multiplier'] = multiplier
+    
+        df = df.loc[df.groupby(['genus', 'gender'])['mass'].idxmin()]
+        if compressed:
+            df['gender'] = df['gender'].map({'female' : 'F', 'male' : 'M'})
+            df['uuid_gender_mass'] = df['id'] + '_' + df['gender'] + df['mass'].map(lambda x: '_{:.3e}'.format(x))
+            df = df['uuid_gender_mass']
+        else:
+            df['mass'] = df['mass'] / df['multiplier']
+            df['mass'] = df['mass'].astype(str) + ' ' + df['unit']
+            df = df.drop(columns = ['multiplier', 'unit'])
+            
+    with open(output_path, 'w+') as _output:
+        if compressed:
+            df.to_csv(_output, index=False, header=True)
+        else:
+            df.to_csv(_output, index=False)
 
 
 if __name__ == '__main__':
