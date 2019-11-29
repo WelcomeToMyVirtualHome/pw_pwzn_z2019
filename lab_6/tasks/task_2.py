@@ -31,4 +31,4 @@ def check_animal_list(file_path):
 
 if __name__ == '__main__':
     assert check_animal_list('s_animals_sce.txt') == (2, 2)
-    assert check_animal_list('animals_sc_corrupted.txt') == (5, 1)
+    assert check_animal_list('animals_sc_corrupted.txt') == (5, 0)
