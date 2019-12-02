@@ -1,5 +1,7 @@
 import numpy as np
 
+# Stworzyć venv, tam zainstalować numpy, dodać requirements.txt
+# nie używać forów
 
 def least_sq(xy):
     """
@@ -17,7 +19,11 @@ def least_sq(xy):
     :type xy: np.ndarray
     :return: Tuple of fitted parameters
     """
-    pass
+    n = np.size(xy[0])
+    delta = n * np.sum(xy[0] ** 2) - np.sum(xy[0]) ** 2
+    A = (np.sum(xy[0] ** 2) * np.sum(xy[1]) - np.sum(xy[0]) * np.sum(xy[0] * xy[1])) / delta
+    B = (n * np.sum(xy[0] * xy[1]) - np.sum(xy[0]) * np.sum(xy[1])) / delta
+    return((A, B))
 
 
 if __name__ == '__main__':
@@ -221,4 +227,4 @@ if __name__ == '__main__':
                         98.00343145869182,
                         98.9982680433363,
                         100.00083927400149]])
-    np.testing.assert_allclose(least_sq(points), (1, -1), atol=0.1)
+    np.testing.assert_allclose(least_sq(points), (1, 1), atol=0.1)
