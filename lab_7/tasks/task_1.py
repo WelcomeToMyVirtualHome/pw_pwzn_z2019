@@ -1,8 +1,5 @@
 import numpy as np
 
-# Stworzyć venv, tam zainstalować numpy, dodać requirements.txt
-# nie używać forów
-
 def least_sq(xy):
     """
     Fits linear function to given vector of 2D points.
