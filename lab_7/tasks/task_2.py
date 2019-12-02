@@ -23,8 +23,22 @@ def calculate_neighbours(board):
     :type board: np.ndarray
     :param periodic
     """
-    pass
+    neighbours = np.zeros(shape = board.shape, dtype=np.uint64)
+    board = np.pad(board, (1, 1), 'constant', constant_values=0)
+    def strip(arr):
+        return arr[1:-1, 1:-1]
 
+    neighbours += strip(np.roll(board, 1, axis=0))
+    neighbours += strip(np.roll(board, -1, axis=0))
+    neighbours += strip(np.roll(board, 1, axis=1))
+    neighbours += strip(np.roll(board, -1, axis=1))
+    neighbours += strip(np.roll(np.roll(board, -1, axis=1), -1, axis=0))
+    neighbours += strip(np.roll(np.roll(board, -1, axis=1), 1, axis=0))
+    neighbours += strip(np.roll(np.roll(board, 1, axis=1), 1, axis=0))
+    neighbours += strip(np.roll(np.roll(board, 1, axis=1), -1, axis=0))
+    return neighbours
+    
+    
 
 def iterate(board):
     """
@@ -44,8 +58,10 @@ def iterate(board):
     :return: next board state
     :rtype: np.ndarray
     """
-    pass
-
+    neighbours = calculate_neighbours(board)
+    board[(board == False) & (neighbours == 3)] = True
+    board[(board == True) & ((neighbours < 2) | (neighbours > 3))] = False
+    return board
 
 if __name__ == '__main__':
     _board = np.array([
