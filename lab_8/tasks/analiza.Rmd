@@ -1,0 +1,83 @@
+```{python}
+from tools.fit_funcs import least_sq
+import numpy as np
+import matplotlib.pyplot as plt
+```
+
+```{python}
+data = np.genfromtxt('data/input01.txt', delimiter=',', skip_header=1, dtype='float')
+x = data[:, 0]
+y = data[:, 1]
+err = data[:, 2]
+```
+
+```{python}
+b, a = least_sq(data[:,0:2].T)
+y_fitted = x*a + b
+```
+
+```{python}
+data_clean = data[err/y < 0.05,]
+x_clean = data_clean[:,0]
+y_clean = data_clean[:,1]
+err_clean = data_clean[:,2]
+
+b_clean, a_clean = least_sq(data_clean[:,0:2].T)
+y_fitted_clean = a_clean * x_clean + b_clean
+```
+
+```{python}
+data_noise = data[err/y >= 0.05,]
+x_noise = data_noise[:,0]
+y_noise = data_noise[:,1]
+err_noise = data_noise[:,2]
+```
+
+```{python}
+fig = plt.figure()
+ax = fig.add_axes([0.1, 0.1, 0.8, 0.8])
+
+ax.errorbar(
+    x=x_clean,
+    y=y_clean,
+    yerr=err_clean,
+    markersize=2,
+    marker='s',
+    color='black',
+    ls='none')
+
+ax.errorbar(
+    x=x_noise,
+    y=y_noise,
+    yerr=err_noise,
+    markersize=2,
+    marker='v',
+    color='red',
+    ls='none')
+
+ax.plot(
+    x,
+    y_fitted,
+    ls='--',
+    color='blue',
+    label='all'
+)
+
+ax.plot(
+    x_clean,
+    y_fitted_clean,
+    ls='--',
+    color='green',
+    label=r'$\Delta < 0.05$'
+)
+
+ax.legend()
+```
+
+```{python}
+fig
+```
+
+```{python}
+fig.savefig('fitted_input01.png', dpi=100)
+```
