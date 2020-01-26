@@ -1,5 +1,10 @@
 def generate_fibonacci(n=100):
-    pass
+    if n <= 0:
+        raise RuntimeError
+    a, b = 0, 1
+    for _ in range(n):
+        yield a
+        a, b = b, a + b
 
 
 if __name__ == '__main__':
