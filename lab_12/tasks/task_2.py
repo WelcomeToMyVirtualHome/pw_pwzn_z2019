@@ -4,8 +4,14 @@ from time import time
 
 
 def log_run(fun):
-    pass
-
+    def func(*args, **kwargs):
+        start = time()
+        print(f"{datetime.now().isoformat()}| function {fun.__name__} called with:")
+        print(f"{len(args)} positional arguments")
+        print(f"optional parameters: {', '.join(list(kwargs.keys())) if len(kwargs.keys()) > 0 else '-'}")
+        out = fun(*args, **kwargs)
+        print(f"returned: {out} ({(time() - start):.2e})")
+    return func
 
 @log_run
 def fun(*args, **kwargs):
